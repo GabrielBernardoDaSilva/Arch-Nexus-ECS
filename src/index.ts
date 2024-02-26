@@ -37,13 +37,14 @@ if (!res1) {
   console.log(res2);
 }
 
-const query = new Query([Position, Entity]);
-const result = query.findAll(...archetypes);
-const e = query.convertToType<[Entity, Position]>(result);
-for (const res of e) {
-  const [pos, ent] = res;
-  
-  console.log(pos, ent);
+const query = new Query(Position, Velocity);
+const result: [Position, Velocity][] = query
+  .findAll(...archetypes)
+  .resolveQueryResultTypeMapper();
+
+for (const res of result) {
+  let [position, entity] = res;
+  console.log(position, entity);
 }
 
 console.log(res, res1);

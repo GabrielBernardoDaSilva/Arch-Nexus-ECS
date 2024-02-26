@@ -2,10 +2,11 @@ import { Archetype } from "./archetype";
 import { Component } from "./component";
 
 type QuerySearchType = new (...args: any[]) => Component;
-type QueryResultType<T extends unknown> = [
-  T extends [infer A] ? A : never,
-  T extends [unknown, infer B] ? B : never
-];
+
+// but using the type mapping, we can map the types to their actual types strings
+type QueryResultTypeMapper<T extends QuerySearchType[]> = {
+  [P in keyof T]: T[P];
+};
 
 // Query class
 // This class will be used to query for entities that have a specific set of components.
@@ -13,9 +14,14 @@ type QueryResultType<T extends unknown> = [
 // The Query class will have a constructor that takes an array of types.
 // The types will be the components that the query will look for.
 export class Query<T extends QuerySearchType[]> {
-  constructor(private types: T) {}
+  types: T;
+  constructor(...types: T) {
+    this.types = types;
+  }
+  result: QuerySearchType[][] = [];
+  queryResultTypeMapper: QueryResultTypeMapper<T>;
 
-  public findAll(...archetypes: Archetype[]): QuerySearchType[][] {
+  public findAll(...archetypes: Archetype[]): Query<T> {
     const result: QuerySearchType[][] = [];
     for (const archetype of archetypes) {
       const components = archetype.components;
@@ -39,11 +45,11 @@ export class Query<T extends QuerySearchType[]> {
         }
       }
     }
-    return result;
+    this.result = result;
+    return this;
   }
 
-  public convertToType<T extends unknown[]>(result: QuerySearchType[][]): T[] {
-    return result as T[];
+  public resolveQueryResultTypeMapper<U extends unknown[]>() {
+    return this.result as U[];
   }
 }
-
