@@ -1,0 +1,34 @@
+{
+  "name": "ecs",
+  "version": "0.0.0",
+  "description": "ECS",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.7",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "eslint": "^8.21.0",
+    "typescript": "^4.5.2"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ]
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.2.1"
+  }
+}
