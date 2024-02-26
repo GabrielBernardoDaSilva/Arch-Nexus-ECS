@@ -69,7 +69,6 @@ export class World {
 
     if (entity) {
       const archetype = this.archetypes[entityFounded.archetypeIndex];
-      
       const moveEntity = archetype.removeComponent(entityFounded.id, component);
       if (moveEntity && moveEntity[1].size > 0) {
         this.migrateEntityToOtherArchetype(
@@ -86,7 +85,13 @@ export class World {
       const archetype = this.archetypes[entityFounded.archetypeIndex];
       archetype.removeEntity(entityFounded.id);
       this.entities = this.entities.filter((ent) => ent.id !== entity.id);
+      this.checkIfArchetypeIsMarkedToRemove(archetype);
     }
+  }
+
+  private checkIfArchetypeIsMarkedToRemove(archetype: Archetype) {
+    if (archetype.entities.length === 0)
+      this.archetypes.splice(this.archetypes.indexOf(archetype), 1);
   }
 
   private *generateEntityId(): Generator<number> {

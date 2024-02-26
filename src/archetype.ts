@@ -96,7 +96,8 @@ export class Archetype {
     entityId: EntityId,
     component: Component
   ): [EntityId, Map<string, Component>] {
-    const componentName = component.constructor.name;
+    const name = Reflect.get(component, "name");
+    const componentName = name;
     if (this.components.has(componentName)) {
       const componentList = this.components.get(componentName);
       const index = this.entities.indexOf(entityId);
@@ -105,6 +106,7 @@ export class Archetype {
       const componentsOfThisEntityToMigrate = new Map<string, Component>();
       for (const [componentName, componentList] of this.components) {
         const component = componentList.components[index];
+        if (!component) continue;
         componentsOfThisEntityToMigrate.set(componentName, component);
         componentList.removeComponent(index);
       }

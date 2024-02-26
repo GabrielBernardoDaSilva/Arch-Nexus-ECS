@@ -20,9 +20,10 @@ const entity = world.addEntity(new Position(0, 0), new Velocity(1, 1));
 world.addEntity(new Position(1, 1));
 
 world.removeComponentFromEntity(entity, Velocity);
+world.removeEntity(entity);
 
-const query = new Query(Position, Velocity);
-const result: [Position, Velocity][] = query
+const query = new Query(Position);
+const result: [Position][] = query
   .findAll(world)
   .resolveQueryResultTypeMapper();
-console.table(result);
+console.table(world.archetypes.length);
