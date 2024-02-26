@@ -2,7 +2,11 @@ import { Component, ComponentList } from "./component";
 
 type EntityId = number;
 
-export class Entity extends Component{
+export class EntityLocation {
+  constructor(public id: number, public archetypeIndex: number) {}
+}
+
+export class Entity extends Component {
   constructor(public id: EntityId) {
     super();
   }
@@ -27,6 +31,13 @@ export class Archetype {
   ): boolean {
     return this.components.has(type.name);
   }
+  public hasAllComponentsByString<T extends Component>(
+    ...components: T[]
+  ): boolean {
+    const types = components.map((component) => component.constructor.name);
+    return types.every((type) => this.components.has(type));
+  }
+
   public hasAllComponents(
     ...types: (new (...args: unknown[]) => unknown)[]
   ): boolean {
@@ -78,6 +89,37 @@ export class Archetype {
         }
         otherArchetype.addComponents(entityId, componentInstance);
       }
+    }
+  }
+
+  public removeComponent(
+    entityId: EntityId,
+    component: Component
+  ): [EntityId, Map<string, Component>] {
+    const componentName = component.constructor.name;
+    if (this.components.has(componentName)) {
+      const componentList = this.components.get(componentName);
+      const index = this.entities.indexOf(entityId);
+      componentList.removeComponent(index);
+
+      const componentsOfThisEntityToMigrate = new Map<string, Component>();
+      for (const [componentName, componentList] of this.components) {
+        const component = componentList.components[index];
+        componentsOfThisEntityToMigrate.set(componentName, component);
+        componentList.removeComponent(index);
+      }
+
+      this.entities = this.entities.filter((id) => id !== entityId);
+      return [entityId, componentsOfThisEntityToMigrate];
+    }
+  }
+  public removeEntity(entityId: EntityId) {
+    const index = this.entities.indexOf(entityId);
+    if (index !== -1) {
+      for (const [_, componentList] of this.components) {
+        componentList.removeComponent(index);
+      }
+      this.entities = this.entities.filter((id) => id !== entityId);
     }
   }
 }

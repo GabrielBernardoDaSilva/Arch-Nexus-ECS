@@ -1,6 +1,7 @@
 import { Archetype, Entity } from "./archetype";
 import { Component } from "./component";
 import { Query } from "./query";
+import { World } from "./world";
 
 class Position extends Component {
   constructor(public x: number, public y: number) {
@@ -14,37 +15,14 @@ class Velocity extends Component {
   }
 }
 
-const archetypes = [];
-const entity = 1;
-const archetype = new Archetype(entity, new Position(1, 1));
-const entity3 = 3;
-archetype.addNewEntity(entity3, new Position(1, 3));
-const res = archetype.hasComponentType(Position);
+const world = new World();
+const entity = world.addEntity(new Position(0, 0), new Velocity(1, 1));
+world.addEntity(new Position(1, 1));
 
-archetypes.push(archetype);
-
-const entity2 = 2;
-const res1 = archetype.hasAllComponents(Velocity, Position);
-if (!res1) {
-  const archetype2 = new Archetype(
-    entity2,
-    new Position(1, 2),
-    new Velocity(1, 2)
-  );
-  const res2 = archetype2.hasAllComponents(Velocity, Position);
-  archetypes.push(archetype2);
-
-  console.log(res2);
-}
+world.removeComponentFromEntity(entity, Velocity);
 
 const query = new Query(Position, Velocity);
 const result: [Position, Velocity][] = query
-  .findAll(...archetypes)
+  .findAll(world)
   .resolveQueryResultTypeMapper();
-
-for (const res of result) {
-  let [position, entity] = res;
-  console.log(position, entity);
-}
-
-console.log(res, res1);
+console.table(result);

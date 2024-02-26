@@ -9,4 +9,8 @@ export class ComponentList {
   addComponents(...components: Component[]) {
     this.components.push(...components);
   }
+
+  removeComponent(index: number) {
+    this.components.splice(index, 1);
+  }
 }

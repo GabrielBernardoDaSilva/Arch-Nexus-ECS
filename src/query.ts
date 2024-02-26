@@ -1,5 +1,6 @@
 import { Archetype } from "./archetype";
 import { Component } from "./component";
+import { World } from "./world";
 
 type QuerySearchType = new (...args: any[]) => Component;
 
@@ -21,7 +22,11 @@ export class Query<T extends QuerySearchType[]> {
   result: QuerySearchType[][] = [];
   queryResultTypeMapper: QueryResultTypeMapper<T>;
 
-  public findAll(...archetypes: Archetype[]): Query<T> {
+  queryNeedToUpdate: boolean = true;
+
+  public findAll(world: World): Query<T> {
+    if (!this.queryNeedToUpdate) return this;
+    const archetypes = world.archetypes;
     const result: QuerySearchType[][] = [];
     for (const archetype of archetypes) {
       const components = archetype.components;
@@ -46,6 +51,7 @@ export class Query<T extends QuerySearchType[]> {
       }
     }
     this.result = result;
+    this.queryNeedToUpdate = false;
     return this;
   }
 
