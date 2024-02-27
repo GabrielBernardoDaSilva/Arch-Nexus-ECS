@@ -1,6 +1,7 @@
 import { Entity } from "./archetype";
 import { Component } from "./component";
 import { Query } from "./query";
+import { TaskScheduler, WaitAmountOfSeconds } from "./scheduler";
 import { System } from "./system";
 import { World } from "./world";
 
@@ -56,6 +57,31 @@ class SpawnSystem extends System {
 
 const world = new World();
 world.addSystems(SpawnSystem, PrintSystem);
+
+function* generateId(n1: number, n2: number, n3: number) {
+  yield new WaitAmountOfSeconds(n1);
+  console.log("GenerateId::1 seconds passed ", new Date().getSeconds());
+  yield new WaitAmountOfSeconds(n2);
+  console.log("GenerateId::2 seconds passed ", new Date().getSeconds());
+  yield new WaitAmountOfSeconds(n3);
+  console.log("GenerateId::3 seconds passed ", new Date().getSeconds());
+}
+
+function* generateId1(n1: number, n2: number, n3: number) {
+  yield new WaitAmountOfSeconds(n1);
+  console.log("GenerateId1::2 seconds passed ", new Date().getSeconds());
+  yield new WaitAmountOfSeconds(n2);
+  console.log("GenerateId1::3 seconds passed ", new Date().getSeconds());
+  yield new WaitAmountOfSeconds(n3);
+  console.log("GenerateId1::4 seconds passed ", new Date().getSeconds());
+}
+
+world.addTaskScheduler(new TaskScheduler(generateId, 1, 1, 1));
+world.addTaskScheduler(new TaskScheduler(generateId1, 2, 3, 20));
+setTimeout(() => {
+  world.pauseTaskScheduler("generateId1");
+  console.log("Paused generateId1");
+}, 5000);
 
 world.startUp();
 world.update();

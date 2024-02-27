@@ -1,11 +1,13 @@
 import { Archetype, Entity, EntityLocation } from "./archetype";
 import { Component } from "./component";
+import { TaskScheduler } from "./scheduler";
 import { System, SystemType } from "./system";
 
 export class World {
   archetypes: Archetype[] = [];
   entities: EntityLocation[] = [];
   systems: System[] = [];
+  schedulerSystem: TaskScheduler[] = [];
 
   public queryCount = 0;
   public queryActualConsumeHasArchetypeChanged = 0;
@@ -146,12 +148,45 @@ export class World {
     if (this.queryCount === this.queryActualConsumeHasArchetypeChanged)
       this.hasArchetypeChanged = false;
 
+    this.startAllTaskScheduler();
+
     for (const system of this.systems) {
       system.update(this);
     }
 
     if (this.queryCount === this.queryActualConsumeHasArchetypeChanged)
       this.hasArchetypeChanged = false;
+  }
+
+  public addTaskScheduler(task: TaskScheduler) {
+    this.schedulerSystem.push(task);
+  }
+
+  public pauseTaskScheduler(name: string) {
+    const task = this.schedulerSystem.find((task) => task.name === name);
+    if (task) task.stop();
+  }
+
+  public pauseAllTaskScheduler() {
+    for (const task of this.schedulerSystem) {
+      task.stop();
+    }
+  }
+
+  public resumeTaskScheduler(name: string) {
+    const task = this.schedulerSystem.find((task) => task.name === name);
+    if (task) task.resume();
+  }
+
+  public startAllTaskScheduler() {
+    for (const task of this.schedulerSystem) {
+      task.start();
+    }
+  }
+
+  public startTaskScheduler(name: string) {
+    const task = this.schedulerSystem.find((task) => task.name === name);
+    if (task) task.start();
   }
 
   get archetypesModified() {
