@@ -4,14 +4,18 @@ import { Component } from "./component";
 export class World {
   archetypes: Archetype[] = [];
   entities: EntityLocation[] = [];
+  private hasArchetypeChanged = false;
+  private static id = 0;
 
-  public addEntity<T extends Component[]>(...components: T): Entity {
-    const entityId = this.generateEntityId().next().value as number;
+  public addEntity<T extends Component[]>(...comps: T): Entity {
+    const entityId = World.id++;
+    const components = [new Entity(entityId), ...comps];
 
     const archetypeFounded = this.archetypes.find((archetype) =>
       archetype.hasAllComponentsByString(components)
     );
     let indexOfArchetype = this.archetypes.length;
+
     if (archetypeFounded) {
       archetypeFounded.addNewEntity(entityId, ...components);
       indexOfArchetype = this.archetypes.indexOf(archetypeFounded);
@@ -23,7 +27,9 @@ export class World {
     this.entities.push({
       id: entityId,
       archetypeIndex: indexOfArchetype,
+      componentsName: components.map((component) => component.constructor.name),
     });
+    this.hasArchetypeChanged = true;
 
     return new Entity(entityId);
   }
@@ -33,32 +39,42 @@ export class World {
     component: T
   ) {
     const entityFounded = this.entities.find((ent) => ent.id === entity.id);
-    if (entity) {
+    if (entityFounded) {
       const archetype = this.archetypes[entityFounded.archetypeIndex];
-      archetype.addComponents(entityFounded.id, component);
+      const moveEntity = archetype.moveEntity(entityFounded.id);
+      if (moveEntity) {
+        const componentName = component.constructor.name;
+        moveEntity[1].set(componentName, component);
+        this.migrateEntityToOtherArchetype(
+          entityFounded,
+          Array.from(moveEntity[1].values())
+        );
+      }
     }
+
+    this.hasArchetypeChanged = true;
   }
 
   private migrateEntityToOtherArchetype<T extends Component>(
-    entityId: number,
+    entity: EntityLocation,
     components: T[]
   ) {
-    const archetypeFounded = this.archetypes.find((archetype) =>
+    let archetype = this.archetypes.find((archetype) =>
       archetype.hasAllComponentsByString(components)
     );
-    let index = this.archetypes.length;
-    if (archetypeFounded) {
-      index = this.archetypes.indexOf(archetypeFounded);
-      archetypeFounded.addNewEntity(entityId, ...components);
-    } else {
-      const archetype = new Archetype(entityId, ...components);
+    if (archetype) archetype.addNewEntity(entity.id, ...components);
+    else {
+      archetype = new Archetype(entity.id, ...components);
       this.archetypes.push(archetype);
     }
 
-    const entity = this.entities.find((entity) => entity.id === entityId);
-    if (entity) {
-      entity.archetypeIndex = index;
-    }
+    entity.componentsName = components.map(
+      (component) => component.constructor.name
+    );
+    const oldArchetype = this.archetypes[entity.archetypeIndex];
+    this.checkIfArchetypeIsMarkedToRemove(oldArchetype);
+    const index = this.archetypes.indexOf(archetype);
+    entity.archetypeIndex = index;
   }
 
   public removeComponentFromEntity<T extends Component>(
@@ -67,14 +83,15 @@ export class World {
   ) {
     const entityFounded = this.entities.find((ent) => ent.id === entity.id);
 
-    if (entity) {
+    if (entityFounded) {
       const archetype = this.archetypes[entityFounded.archetypeIndex];
       const moveEntity = archetype.removeComponent(entityFounded.id, component);
       if (moveEntity && moveEntity[1].size > 0) {
         this.migrateEntityToOtherArchetype(
-          entity.id,
+          entityFounded,
           Array.from(moveEntity[1].values())
         );
+        this.hasArchetypeChanged = true;
       }
     }
   }
@@ -86,18 +103,21 @@ export class World {
       archetype.removeEntity(entityFounded.id);
       this.entities = this.entities.filter((ent) => ent.id !== entity.id);
       this.checkIfArchetypeIsMarkedToRemove(archetype);
+      this.hasArchetypeChanged = true;
     }
   }
 
   private checkIfArchetypeIsMarkedToRemove(archetype: Archetype) {
-    if (archetype.entities.length === 0)
-      this.archetypes.splice(this.archetypes.indexOf(archetype), 1);
-  }
+    if (archetype.entities.length === 0) {
 
-  private *generateEntityId(): Generator<number> {
-    let id = 0;
-    while (true) {
-      yield id++;
+      const index = this.archetypes.indexOf(archetype);
+      this.archetypes.splice(index, 1);
+      this.entities = this.entities.map((entity) => {
+        if (entity.archetypeIndex > index) {
+          entity.archetypeIndex--;
+        }
+        return entity;
+      });
     }
   }
 }

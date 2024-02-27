@@ -8,16 +8,14 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "runtimeExecutable": "ts-node",
+            "runtimeExecutable": "yarn",
             "runtimeArgs": [
-                "--transpile-only",
-                // if you use esm
-                "--esm" 
+                "start"
               ],
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\index.ts",
+            "program": "${workspaceFolder}/src/index.ts",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]

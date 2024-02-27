@@ -3,7 +3,11 @@ import { Component, ComponentList } from "./component";
 type EntityId = number;
 
 export class EntityLocation {
-  constructor(public id: number, public archetypeIndex: number) {}
+  constructor(
+    public id: number,
+    public archetypeIndex: number,
+    public componentsName: string[]
+  ) {}
 }
 
 export class Entity extends Component {
@@ -32,10 +36,14 @@ export class Archetype {
     return this.components.has(type.name);
   }
   public hasAllComponentsByString<T extends Component>(
-    ...components: T[]
+    components: T[]
   ): boolean {
     const types = components.map((component) => component.constructor.name);
-    return types.every((type) => this.components.has(type));
+
+    return (
+      types.every((type) => this.components.has(type)) &&
+      types.length === this.components.size
+    );
   }
 
   public hasAllComponents(
@@ -49,7 +57,6 @@ export class Archetype {
   }
 
   addComponents(entityId: EntityId, ...components: Component[]) {
-    components.push(new Entity(entityId));
     for (const component of components) {
       const componentName = component.constructor.name;
       if (!this.components.has(componentName)) {
@@ -123,5 +130,18 @@ export class Archetype {
       }
       this.entities = this.entities.filter((id) => id !== entityId);
     }
+  }
+
+  public moveEntity(entityId: EntityId): [EntityId, Map<string, Component>] {
+    const index = this.entities.indexOf(entityId);
+    const componentsOfThisEntityToMigrate = new Map<string, Component>();
+    for (const [componentName, componentList] of this.components) {
+      const component = componentList.components[index];
+      if (!component) continue;
+      componentsOfThisEntityToMigrate.set(componentName, component);
+      componentList.removeComponent(index);
+    }
+    this.entities = this.entities.filter((id) => id !== entityId);
+    return [entityId, componentsOfThisEntityToMigrate];
   }
 }
