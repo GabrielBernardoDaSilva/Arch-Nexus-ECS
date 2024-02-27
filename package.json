@@ -1,6 +1,7 @@
 {
-  "name": "ecs",
+  "name": "arch-nexus-ecs",
   "version": "0.0.0",
+  "license": "MIT",
   "description": "ECS",
   "main": "app.js",
   "author": {

@@ -1,4 +1,4 @@
-import { Archetype, Entity } from "./archetype";
+import { Entity } from "./archetype";
 import { Component } from "./component";
 import { Query } from "./query";
 import { System } from "./system";
