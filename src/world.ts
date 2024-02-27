@@ -1,9 +1,12 @@
 import { Archetype, Entity, EntityLocation } from "./archetype";
 import { Component } from "./component";
+import { System } from "./system";
 
 export class World {
   archetypes: Archetype[] = [];
   entities: EntityLocation[] = [];
+  systems: System[] = [];
+
   private hasArchetypeChanged = false;
   private static id = 0;
 
@@ -109,15 +112,28 @@ export class World {
 
   private checkIfArchetypeIsMarkedToRemove(archetype: Archetype) {
     if (archetype.entities.length === 0) {
-
       const index = this.archetypes.indexOf(archetype);
       this.archetypes.splice(index, 1);
       this.entities = this.entities.map((entity) => {
-        if (entity.archetypeIndex > index) {
-          entity.archetypeIndex--;
-        }
+        if (entity.archetypeIndex > index) entity.archetypeIndex--;
         return entity;
       });
+    }
+  }
+
+  public addSystem(system: System) {
+    this.systems.push(system);
+  }
+
+  public startUp() {
+    for (const system of this.systems) {
+      system.startUp(this);
+    }
+  }
+
+  public update() {
+    for (const system of this.systems) {
+      system.update(this);
     }
   }
 }

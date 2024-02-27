@@ -1,6 +1,7 @@
 import { Archetype, Entity } from "./archetype";
 import { Component } from "./component";
 import { Query } from "./query";
+import { System } from "./system";
 import { World } from "./world";
 
 class Position extends Component {
@@ -18,6 +19,21 @@ class Velocity extends Component {
 class Health extends Component {
   constructor(public hp: number) {
     super();
+  }
+}
+
+type QueryResult = [Position, Velocity, Entity];
+
+class PrintSystem extends System {
+  query = new Query(Position, Velocity, Entity);
+
+  startUp(world: World): void {
+    this.query.findAll(world);
+  }
+
+  update(world: World) {
+    const result = this.query.resolveQueryResultTypeMapper<QueryResult>();
+    console.table(result);
   }
 }
 
