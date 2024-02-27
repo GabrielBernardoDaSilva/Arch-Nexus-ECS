@@ -6,7 +6,8 @@
 /// The system will then be responsible for updating the entities in the archetypes.
 import { World } from "./world";
 
+export type SystemType = new (...args: unknown[]) => System | System;
 export abstract class System {
   startUp(world: World) {}
-  abstract update(world: World);
+  abstract update(world: World): void;
 }

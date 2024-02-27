@@ -4,10 +4,12 @@ import { World } from "./world";
 
 type QuerySearchType = new (...args: any[]) => Component;
 
-// but using the type mapping, we can map the types to their actual types strings
-type QueryResultTypeMapper<T extends QuerySearchType[]> = {
-  [P in keyof T]: T[P];
-};
+enum QueryType {
+  All,
+  First,
+  Last,
+  None,
+}
 
 // Query class
 // This class will be used to query for entities that have a specific set of components.
@@ -16,17 +18,19 @@ type QueryResultTypeMapper<T extends QuerySearchType[]> = {
 // The types will be the components that the query will look for.
 export class Query<T extends QuerySearchType[]> {
   types: T;
-  constructor(...types: T) {
+  constructor(world: World, ...types: T) {
     this.types = types;
+    this.world = world;
+    this.world.queryCount++;
   }
   result: QuerySearchType[][] = [];
-  queryResultTypeMapper: QueryResultTypeMapper<T>;
-
+  world: World;
   queryNeedToUpdate: boolean = true;
+  private queryType: QueryType = QueryType.All;
 
-  public findAll(world: World): Query<T> {
+  public findAll(): Query<T> {
     if (!this.queryNeedToUpdate) return this;
-    const archetypes = world.archetypes;
+    const archetypes = this.world.archetypes;
     const result: QuerySearchType[][] = [];
     for (const archetype of archetypes) {
       const components = archetype.components;
@@ -55,7 +59,29 @@ export class Query<T extends QuerySearchType[]> {
     return this;
   }
 
+  public findFirst() {
+    this.queryType = QueryType.First;
+  }
+
   public resolveQueryResultTypeMapper<U extends unknown[]>() {
-    return this.result as U[];
+    if (!this.world) return;
+    if (this.world.archetypesModified) this.queryNeedToUpdate = true;
+
+    if (this.queryNeedToUpdate) {
+      this.findAll();
+      this.world.queryActualConsumeHasArchetypeChanged++;
+    }
+    switch (this.queryType) {
+      case QueryType.All:
+        return this.result as U[];
+      case QueryType.First:
+        return [this.result[0]] as U[];
+      case QueryType.Last:
+        return [this.result[this.result.length - 1]] as U[];
+      case QueryType.None:
+        return [] as U[];
+      default:
+        return [] as U[];
+    }
   }
 }

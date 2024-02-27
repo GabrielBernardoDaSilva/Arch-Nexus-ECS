@@ -25,10 +25,11 @@ class Health extends Component {
 type QueryResult = [Position, Velocity, Entity];
 
 class PrintSystem extends System {
-  query = new Query(Position, Velocity, Entity);
+  query: Query<[typeof Position, typeof Velocity, typeof Entity]>;
 
   startUp(world: World): void {
-    this.query.findAll(world);
+    this.query = new Query(world, Position, Velocity, Entity);
+    this.query.findFirst();
   }
 
   update(world: World) {
@@ -37,44 +38,24 @@ class PrintSystem extends System {
   }
 }
 
+class SpawnSystem extends System {
+  startUp(world: World): void {
+    const entity = world.addEntity(new Position(0, 0), new Velocity(1, 1));
+    const entity2 = world.addEntity(new Position(1, 1));
+    world.addEntity(new Position(2, 2), new Velocity(2, 2), new Health(100));
+    world.addEntity(new Position(3, 3), new Velocity(3, 3), new Health(100));
+
+    world.addComponentToEntity(entity, new Health(100));
+    world.removeComponentFromEntity(entity, Velocity);
+
+    world.addComponentToEntity(entity2, new Velocity(1, 1));
+  }
+
+  update(world: World): void {}
+}
+
 const world = new World();
-const entity = world.addEntity(new Position(0, 0), new Velocity(1, 1));
-const entity2 = world.addEntity(new Position(1, 1));
-world.addEntity(new Position(2, 2), new Velocity(2, 2), new Health(100));
-world.addEntity(new Position(3, 3), new Velocity(3, 3), new Health(100));
+world.addSystems(SpawnSystem, PrintSystem);
 
-world.addComponentToEntity(entity, new Health(100));
-world.removeComponentFromEntity(entity, Velocity);
-
-world.addComponentToEntity(entity2, new Velocity(1, 1));
-{
-  const query = new Query(Health, Entity);
-  const result: [Health, Entity][] = query
-    .findAll(world)
-    .resolveQueryResultTypeMapper();
-  console.table(result);
-}
-{
-  const query = new Query(Velocity, Position, Entity);
-  const result: [Velocity, Position, Entity][] = query
-    .findAll(world)
-    .resolveQueryResultTypeMapper();
-  console.table(result);
-}
-{
-  const query = new Query(Entity);
-  const result: [Entity][] = query
-    .findAll(world)
-    .resolveQueryResultTypeMapper();
-  console.table(result);
-}
-
-{
-  const query = new Query(Velocity, Entity);
-  const result: [Velocity, Entity][] = query
-    .findAll(world)
-    .resolveQueryResultTypeMapper();
-  console.table(result);
-}
-
-console.log(world.archetypes.length);
+world.startUp();
+world.update();

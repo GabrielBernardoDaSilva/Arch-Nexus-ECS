@@ -1,12 +1,14 @@
 import { Archetype, Entity, EntityLocation } from "./archetype";
 import { Component } from "./component";
-import { System } from "./system";
+import { System, SystemType } from "./system";
 
 export class World {
   archetypes: Archetype[] = [];
   entities: EntityLocation[] = [];
   systems: System[] = [];
 
+  public queryCount = 0;
+  public queryActualConsumeHasArchetypeChanged = 0;
   private hasArchetypeChanged = false;
   private static id = 0;
 
@@ -121,8 +123,17 @@ export class World {
     }
   }
 
-  public addSystem(system: System) {
-    this.systems.push(system);
+  public addSystem<T extends SystemType>(system: T | System) {
+    if (typeof system === "function") {
+      const systemInstance = new system();
+      this.systems.push(systemInstance);
+    } else this.systems.push(system);
+  }
+
+  public addSystems(...systems: SystemType[]) {
+    for (const system of systems) {
+      this.addSystem(system);
+    }
   }
 
   public startUp() {
@@ -132,8 +143,18 @@ export class World {
   }
 
   public update() {
+    if (this.queryCount === this.queryActualConsumeHasArchetypeChanged)
+      this.hasArchetypeChanged = false;
+
     for (const system of this.systems) {
       system.update(this);
     }
+
+    if (this.queryCount === this.queryActualConsumeHasArchetypeChanged)
+      this.hasArchetypeChanged = false;
+  }
+
+  get archetypesModified() {
+    return this.hasArchetypeChanged;
   }
 }
