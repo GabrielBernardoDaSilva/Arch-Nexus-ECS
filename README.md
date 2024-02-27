@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arch-Nexus-ECS</title>
-</head>
-<body>
-
 <h1>Arch-Nexus-ECS</h1>
 
 <p>Arch-Nexus-ECS is a lightweight and efficient Entity Component System (ECS) engine designed for TypeScript. It provides a flexible architecture for building scalable and maintainable applications, especially suited for game development, simulations, and data-intensive applications.</p>
@@ -107,5 +98,3 @@ world.update();
 
 <p>Arch-Nexus-ECS is licensed under the <a href="LICENSE">MIT License</a>.</p>
 
-</body>
-</html>
