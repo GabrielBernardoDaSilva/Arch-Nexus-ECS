@@ -17,7 +17,8 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc --build",
-    "clean": "tsc --build --clean"
+    "clean": "tsc --build --clean",
+    "decl": "tsc --declaration --emitDeclarationOnly"
   },
   "devDependencies": {
     "@types/node": "^14.14.7",
