@@ -145,8 +145,10 @@ export class World {
   }
 
   public update() {
-    if (this.queryCount === this.queryActualConsumeHasArchetypeChanged)
+    if (this.queryCount === this.queryActualConsumeHasArchetypeChanged) {
       this.hasArchetypeChanged = false;
+      this.queryActualConsumeHasArchetypeChanged = 0;
+    }
 
     this.startAllTaskScheduler();
 

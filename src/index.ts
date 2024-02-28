@@ -30,12 +30,11 @@ class PrintSystem extends System {
 
   startUp(world: World): void {
     this.query = new Query(world, Position, Velocity, Entity);
-    this.query.findFirst();
+    this.query.findAll();
   }
 
   update(world: World) {
     const result = this.query.resolveQueryResultTypeMapper<QueryResult>();
-    console.table(result);
   }
 }
 
@@ -65,6 +64,7 @@ function* generateId(n1: number, n2: number, n3: number) {
   console.log("GenerateId::2 seconds passed ", new Date().getSeconds());
   yield new WaitAmountOfSeconds(n3);
   console.log("GenerateId::3 seconds passed ", new Date().getSeconds());
+  world.addEntity(new Position(0, 0), new Velocity(7, 7));
 }
 
 function* generateId1(n1: number, n2: number, n3: number) {
@@ -84,4 +84,10 @@ setTimeout(() => {
 }, 5000);
 
 world.startUp();
-world.update();
+
+const recursive = () => {
+  world.update();
+  setTimeout(recursive, 33);
+};
+
+recursive();
