@@ -1,3 +1,3 @@
-export * from "./src/arch-nexus-ecs";
+export * from "./src/archNexusEcs";
 
 export as namespace ArchNexusEcs;

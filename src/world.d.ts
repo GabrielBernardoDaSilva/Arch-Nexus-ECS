@@ -1,5 +1,6 @@
 import { Archetype, Entity, EntityLocation } from "./archetype";
 import { Component } from "./component";
+import { Query, QuerySearchType } from "./query";
 import { TaskScheduler } from "./scheduler";
 import { System, SystemType } from "./system";
 export declare class World {
@@ -27,5 +28,6 @@ export declare class World {
     resumeTaskScheduler(name: string): void;
     startAllTaskScheduler(): void;
     startTaskScheduler(name: string): void;
+    createQuery<T extends QuerySearchType[]>(...comps: T): Query<T>;
     get archetypesModified(): boolean;
 }

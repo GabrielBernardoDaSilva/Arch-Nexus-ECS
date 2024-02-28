@@ -8,7 +8,7 @@
     "emitDecoratorMetadata": true,
     "declaration": true,
     "typeRoots": ["src/@types", "node_modules/@types"],
-    "outDir": "dist"
+    "outDir": "decl"
   },
   "include": [
     "src/*.ts"

@@ -1,5 +1,6 @@
 import { Archetype, Entity, EntityLocation } from "./archetype";
 import { Component } from "./component";
+import { Query, QuerySearchType } from "./query";
 import { TaskScheduler } from "./scheduler";
 import { System, SystemType } from "./system";
 
@@ -189,6 +190,10 @@ export class World {
   public startTaskScheduler(name: string) {
     const task = this.schedulerSystem.find((task) => task.name === name);
     if (task) task.start();
+  }
+
+  public createQuery<T extends QuerySearchType[]>(...comps: T): Query<T> {
+    return new Query(this, ...comps);
   }
 
   get archetypesModified() {

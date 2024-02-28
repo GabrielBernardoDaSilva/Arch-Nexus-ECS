@@ -1,6 +1,6 @@
 import { Component } from "./component";
 import { World } from "./world";
-type QuerySearchType = new (...args: any[]) => Component;
+export type QuerySearchType = new (...args: any[]) => Component;
 export declare class Query<T extends QuerySearchType[]> {
     types: T;
     constructor(world: World, ...types: T);
@@ -12,4 +12,3 @@ export declare class Query<T extends QuerySearchType[]> {
     findFirst(): void;
     resolveQueryResultTypeMapper<U extends unknown[]>(): U[];
 }
-export {};
