@@ -35,6 +35,7 @@ class PrintSystem extends System {
 
   update(world: World) {
     const result = this.query.resolveQueryResultTypeMapper<QueryResult>();
+    console.table(result);
   }
 }
 
