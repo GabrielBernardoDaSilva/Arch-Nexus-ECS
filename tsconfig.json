@@ -7,7 +7,11 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
-    "typeRoots": ["src/@types", "node_modules/@types"]
+    "typeRoots": ["src/@types", "node_modules/@types"],
+    "outDir": "dist"
   },
+  "include": [
+    "src/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

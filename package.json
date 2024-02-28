@@ -1,11 +1,19 @@
 {
   "name": "arch-nexus-ecs",
-  "version": "0.2.3",
+  "version": "0.2.7",
   "license": "MIT",
   "description": "ECS",
   "type": "module",
-  "main": "./index.d.ts",
-  "module": "./index.d.ts",
+  "main": "index.d.ts",
+  "module": "index.d.ts",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.d.ts",
+      "require": "./index.d.ts"
+    },
+    "./src*": "./src/*"
+  },
   "keywords": [
     "ecs",
     "game engine",
