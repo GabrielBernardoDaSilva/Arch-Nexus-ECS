@@ -1,8 +1,8 @@
 <h1>Arch Nexus ECS</h1>
 
-<div>
-    <img src="./arch-nexus.png" width="800" height="600"></img>
-</div>
+<!-- <div>
+    <img src="https://github.com/GabrielBernardoDaSilva/Arch-Nexus-ECS/blob/master/arch-nexus.png" width="800" height="600"></img>
+</div> -->
 
 <p>Arch-Nexus-ECS is a lightweight and efficient Entity Component System (ECS) engine designed for TypeScript. It provides a flexible architecture for building scalable and maintainable applications, especially suited for game development, simulations, and data-intensive applications.</p>
 

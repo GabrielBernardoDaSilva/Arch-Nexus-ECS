@@ -1,9 +1,16 @@
 {
   "name": "arch-nexus-ecs",
-  "version": "0.0.0",
+  "version": "0.1.3",
   "license": "MIT",
   "description": "ECS",
   "main": "app.js",
+  "keywords": [
+    "ecs",
+    "game engine",
+    "entity component system",
+    "data driven design",
+    "data management"
+  ],
   "author": {
     "name": ""
   },
