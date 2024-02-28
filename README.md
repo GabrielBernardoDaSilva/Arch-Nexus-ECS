@@ -108,7 +108,7 @@ function* generateId1(n1: number, n2: number, n3: number) {
 }
 
 world.addTaskScheduler(new TaskScheduler(generateId, 1, 1, 1));
-world.addTaskScheduler(new TaskScheduler(generateId1, 2, 3, 20));
+world.addTaskScheduler(new TaskScheduler(generateId1, 2, 3, 4));
 setTimeout(() => {
   world.pauseTaskScheduler("generateId1");
   console.log("Paused generateId1");
