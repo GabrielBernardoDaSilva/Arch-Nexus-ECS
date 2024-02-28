@@ -31,6 +31,7 @@
 import { Entity } from "./archetype";
 import { Component } from "./component";
 import { Query } from "./query";
+import { TaskScheduler, WaitAmountOfSeconds } from "./scheduler";
 import { System } from "./system";
 import { World } from "./world";
 
@@ -59,7 +60,7 @@ class PrintSystem extends System {
 
   startUp(world: World): void {
     this.query = new Query(world, Position, Velocity, Entity);
-    this.query.findFirst();
+    this.query.findAll();
   }
 
   update(world: World) {
@@ -87,8 +88,41 @@ class SpawnSystem extends System {
 const world = new World();
 world.addSystems(SpawnSystem, PrintSystem);
 
+function* generateId(n1: number, n2: number, n3: number) {
+  yield new WaitAmountOfSeconds(n1);
+  console.log("GenerateId::1 seconds passed ", new Date().getSeconds());
+  yield new WaitAmountOfSeconds(n2);
+  console.log("GenerateId::2 seconds passed ", new Date().getSeconds());
+  yield new WaitAmountOfSeconds(n3);
+  console.log("GenerateId::3 seconds passed ", new Date().getSeconds());
+  world.addEntity(new Position(0, 0), new Velocity(7, 7));
+}
+
+function* generateId1(n1: number, n2: number, n3: number) {
+  yield new WaitAmountOfSeconds(n1);
+  console.log("GenerateId1::2 seconds passed ", new Date().getSeconds());
+  yield new WaitAmountOfSeconds(n2);
+  console.log("GenerateId1::3 seconds passed ", new Date().getSeconds());
+  yield new WaitAmountOfSeconds(n3);
+  console.log("GenerateId1::4 seconds passed ", new Date().getSeconds());
+}
+
+world.addTaskScheduler(new TaskScheduler(generateId, 1, 1, 1));
+world.addTaskScheduler(new TaskScheduler(generateId1, 2, 3, 20));
+setTimeout(() => {
+  world.pauseTaskScheduler("generateId1");
+  console.log("Paused generateId1");
+}, 5000);
+
 world.startUp();
-world.update();
+
+const recursive = () => {
+  world.update();
+  setTimeout(recursive, 33);
+};
+
+recursive();
+
 
 </code></pre>
 
