@@ -1,7 +1,7 @@
-import { Archetype, Entity, EntityLocation } from "../archetype";
-import { Component } from "../component";
-import { TaskScheduler } from "../scheduler";
-import { System, SystemType } from "../system";
+import { Archetype, Entity, EntityLocation } from "./archetype";
+import { Component } from "./component";
+import { TaskScheduler } from "./scheduler";
+import { System, SystemType } from "./system";
 export declare class World {
     archetypes: Archetype[];
     entities: EntityLocation[];

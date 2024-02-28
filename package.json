@@ -1,9 +1,11 @@
 {
   "name": "arch-nexus-ecs",
-  "version": "0.1.3",
+  "version": "0.2.3",
   "license": "MIT",
   "description": "ECS",
-  "main": "app.js",
+  "type": "module",
+  "main": "./index.d.ts",
+  "module": "./index.d.ts",
   "keywords": [
     "ecs",
     "game engine",

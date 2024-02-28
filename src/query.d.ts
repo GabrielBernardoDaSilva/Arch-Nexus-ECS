@@ -1,5 +1,5 @@
-import { Component } from "../component";
-import { World } from "../world";
+import { Component } from "./component";
+import { World } from "./world";
 type QuerySearchType = new (...args: any[]) => Component;
 export declare class Query<T extends QuerySearchType[]> {
     types: T;
