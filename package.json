@@ -28,7 +28,7 @@
     "start": "ts-node src/index.ts",
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "decl": "tsc --declaration --emitDeclarationOnly"
+    "decl": "rm -rf ./src/*.d.ts && tsc --declaration --emitDeclarationOnly"
   },
   "devDependencies": {
     "@types/node": "^14.14.7",

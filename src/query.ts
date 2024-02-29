@@ -2,7 +2,7 @@ import { Archetype } from "./archetype";
 import { Component } from "./component";
 import { World } from "./world";
 
-type QuerySearchType = new (...args: any[]) => Component;
+export type QuerySearchType = new (...args: any[]) => Component;
 
 enum QueryType {
   All,
