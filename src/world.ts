@@ -147,7 +147,7 @@ export class World {
   }
 
   public update() {
-    if (this.queryCount === this.queryActualConsumeHasArchetypeChanged) {
+    if (this.queryCount >= this.queryActualConsumeHasArchetypeChanged) {
       this.hasArchetypeChanged = false;
       this.queryActualConsumeHasArchetypeChanged = 0;
     }
@@ -158,8 +158,9 @@ export class World {
       system.update(this);
     }
 
-    if (this.queryCount === this.queryActualConsumeHasArchetypeChanged)
+    if (this.queryCount >= this.queryActualConsumeHasArchetypeChanged)
       this.hasArchetypeChanged = false;
+    
   }
 
   public addTaskScheduler(task: TaskScheduler) {
