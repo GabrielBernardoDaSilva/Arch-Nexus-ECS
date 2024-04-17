@@ -1,5 +1,6 @@
 import { Archetype, Entity, EntityLocation } from "./archetype";
 import { Component } from "./component";
+import { IPlugin } from "./plugin";
 import { Query, QuerySearchType } from "./query";
 import { TaskScheduler } from "./scheduler";
 import { System, SystemType } from "./system";
@@ -194,6 +195,10 @@ export class World {
 
   public createQuery<T extends QuerySearchType[]>(...comps: T): Query<T> {
     return new Query(this, ...comps);
+  }
+
+  public addPlugin(plugin: IPlugin) {
+    plugin.build(this);
   }
 
   get archetypesModified() {
