@@ -28,7 +28,7 @@ export class Query<T extends QuerySearchType[]> {
   queryNeedToUpdate: boolean = true;
   private queryType: QueryType = QueryType.All;
 
-  public findAll(): Query<T> {
+  private find(): Query<T> {
     if (!this.queryNeedToUpdate) return this;
     const archetypes = this.world.archetypes;
     const result: QuerySearchType[][] = [];
@@ -62,6 +62,15 @@ export class Query<T extends QuerySearchType[]> {
   public findFirst() {
     this.queryType = QueryType.First;
   }
+  public findLast() {
+    this.queryType = QueryType.Last;
+  }
+  public findNone() {
+    this.queryType = QueryType.None;
+  }
+  public findAll() {
+    this.queryType = QueryType.All;
+  }
 
   public resolveQueryResultTypeMapper<U extends unknown[]>() {
     if (!this.world) return;
@@ -69,8 +78,9 @@ export class Query<T extends QuerySearchType[]> {
 
     if (this.queryNeedToUpdate) {
       console.log("Query need to update");
-      this.findAll();
+      this.find();
       this.world.queryActualConsumeHasArchetypeChanged++;
+      console.log(this.world.queryActualConsumeHasArchetypeChanged);
     }
     switch (this.queryType) {
       case QueryType.All:

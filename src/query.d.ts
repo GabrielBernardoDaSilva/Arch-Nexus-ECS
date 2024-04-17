@@ -8,7 +8,9 @@ export declare class Query<T extends QuerySearchType[]> {
     world: World;
     queryNeedToUpdate: boolean;
     private queryType;
-    findAll(): Query<T>;
     findFirst(): void;
+    findLast(): void;
+    findAll(): void;
+    findNone(): void;
     resolveQueryResultTypeMapper<U extends unknown[]>(): U[];
 }
