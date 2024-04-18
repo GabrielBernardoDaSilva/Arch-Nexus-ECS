@@ -10,4 +10,5 @@ export type SystemType = new (...args: unknown[]) => System | System;
 export abstract class System {
   startUp(world: World) {}
   abstract update(world: World): void;
+  destroy(world: World) {}
 }

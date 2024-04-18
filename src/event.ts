@@ -1,18 +1,31 @@
 export class Event {}
 
+export type EventType = new (...args: unknown[]) => Event;
+
 export class EventList<T extends Event> {
   private events: T[] = [];
+  private subscribers: Function[] = [];
 
   addEvent(event: T) {
     this.events.push(event);
+    this.notifySubscribers(event);
   }
 
-  consumeEvent() {
-    return this.events.shift();
+  addSubscriber(subscriber: Function) {
+    this.subscribers.push(subscriber);
   }
 
-  clearEvents() {
-    this.events = [];
+  unsubscribe(subscriber: Function) {
+    const index = this.subscribers.indexOf(subscriber);
+    if (index !== -1) {
+      this.subscribers.splice(index, 1);
+    }
+  }
+
+  private notifySubscribers(event: Event) {
+    for (const subscriber of this.subscribers) {
+      subscriber(event);
+    }
   }
 
   get length() {
@@ -25,24 +38,24 @@ export class EventManager {
 
   addEvent<E extends Event>(event: E) {
     const eventType = event.constructor.name;
-
     if (!this.events.has(eventType)) {
       this.events.set(eventType, new EventList());
     }
     this.events.get(eventType)!.addEvent(event);
   }
 
-  consumeEvent<E extends Event>(event: { new (): E }) {
-    const eventType = event.name;
-    if (this.events.has(eventType)) {
-      return this.events.get(eventType)!.consumeEvent();
+  addSubscriber<E extends Event>(ev: E, subscriber: Function) {
+    const eventType = ev.constructor.name;
+    if (!this.events.has(eventType)) {
+      this.events.set(eventType, new EventList());
     }
+    this.events.get(eventType)!.addSubscriber(subscriber);
   }
 
-  clearEvents<E extends Event>(event: { new (): E }) {
-    const eventType = event.name;
+  unsubscribe<E extends Event>(ev: E, subscriber: Function) {
+    const eventType = ev.constructor.name;
     if (this.events.has(eventType)) {
-      this.events.get(eventType)!.clearEvents();
+      this.events.get(eventType)!.unsubscribe(subscriber);
     }
   }
 

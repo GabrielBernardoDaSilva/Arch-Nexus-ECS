@@ -1,5 +1,6 @@
 import { Archetype, Entity, EntityLocation } from "./archetype";
 import { Component } from "./component";
+import { Event, EventManager, EventType } from "./event";
 import { IPlugin } from "./plugin";
 import { Query, QuerySearchType } from "./query";
 import { TaskScheduler } from "./scheduler";
@@ -10,6 +11,7 @@ export class World {
   entities: EntityLocation[] = [];
   systems: System[] = [];
   schedulerSystem: TaskScheduler[] = [];
+  eventManager: EventManager = new EventManager();
 
   public queryCount = 0;
   public queryActualConsumeHasArchetypeChanged = 0;
@@ -147,10 +149,7 @@ export class World {
   }
 
   public update() {
-    if (this.queryCount >= this.queryActualConsumeHasArchetypeChanged) {
-      this.hasArchetypeChanged = false;
-      this.queryActualConsumeHasArchetypeChanged = 0;
-    }
+  
 
     this.startAllTaskScheduler();
 
@@ -158,9 +157,18 @@ export class World {
       system.update(this);
     }
 
-    if (this.queryCount >= this.queryActualConsumeHasArchetypeChanged)
+    if (this.queryCount >= this.queryActualConsumeHasArchetypeChanged) {
       this.hasArchetypeChanged = false;
-    
+      this.queryActualConsumeHasArchetypeChanged = 0;
+     
+    }
+
+  }
+
+  public destroy() {
+    for (const system of this.systems) {
+      system.destroy(this);
+    }
   }
 
   public addTaskScheduler(task: TaskScheduler) {
@@ -204,5 +212,20 @@ export class World {
 
   get archetypesModified() {
     return this.hasArchetypeChanged;
+  }
+
+
+  public addEvent<E extends Event>(event: E) {
+    this.eventManager.addEvent(event);
+  }
+
+  public addSubscriber<E extends EventType>(ev: E, subscriber: Function) {
+    const eventType = new ev();
+    this.eventManager.addSubscriber(eventType, subscriber);
+  }
+
+  public unsubscribe<E extends EventType>(ev: E, subscriber: Function) {
+    const eventType = new ev();
+    this.eventManager.unsubscribe(eventType, subscriber);
   }
 }

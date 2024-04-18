@@ -26,6 +26,7 @@ export declare class World {
   addSystems(...systems: SystemType[]): void;
   startUp(): void;
   update(): void;
+  destroy(): void;
   addTaskScheduler(task: TaskScheduler): void;
   pauseTaskScheduler(name: string): void;
   pauseAllTaskScheduler(): void;
@@ -35,4 +36,7 @@ export declare class World {
   createQuery<T extends QuerySearchType[]>(...comps: T): Query<T>;
   addPlugin(plugin: IPlugin): void;
   get archetypesModified(): boolean;
+  addEvent<E extends Event>(event: E): void;
+  addSubscriber<E extends Event>(ev: E, subscriber: Function): void;
+  unsubscribe<E extends Event>(ev: E, subscriber: Function): void;
 }

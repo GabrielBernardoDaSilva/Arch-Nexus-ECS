@@ -3,18 +3,14 @@ export declare class Event {
 export declare class EventList<T extends Event> {
     private events;
     addEvent(event: T): void;
-    consumeEvent(): T;
-    clearEvents(): void;
+    addSubscriber(subscriber: Function): void;
+    unsubscribe(subscriber: Function): void;
     get length(): number;
 }
 export declare class EventManager {
     private events;
     addEvent<E extends Event>(event: E): void;
-    consumeEvent<E extends Event>(event: {
-        new (): E;
-    }): Event;
-    clearEvents<E extends Event>(event: {
-        new (): E;
-    }): void;
+    addSubscriber<E extends Event>(ev: E, subscriber: Function): void;
+    unsubscribe<E extends Event>(ev: E, subscriber: Function): void;
     get length(): number;
 }

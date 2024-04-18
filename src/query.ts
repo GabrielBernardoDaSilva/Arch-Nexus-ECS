@@ -77,10 +77,8 @@ export class Query<T extends QuerySearchType[]> {
     if (this.world.archetypesModified) this.queryNeedToUpdate = true;
 
     if (this.queryNeedToUpdate) {
-      console.log("Query need to update");
       this.find();
       this.world.queryActualConsumeHasArchetypeChanged++;
-      console.log(this.world.queryActualConsumeHasArchetypeChanged);
     }
     switch (this.queryType) {
       case QueryType.All:
