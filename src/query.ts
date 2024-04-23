@@ -59,17 +59,25 @@ export class Query<T extends QuerySearchType[]> {
     return this;
   }
 
-  public findFirst() {
+  public findFirst<U extends Component[]>(): U {
     this.queryType = QueryType.First;
+    this.resolveQueryResultTypeMapper();
+    return this.result[0] as unknown as U;
   }
-  public findLast() {
+  public findLast<U extends Component[]>(): [U] {
     this.queryType = QueryType.Last;
+    this.resolveQueryResultTypeMapper();
+    return [this.result[this.result.length - 1]] as unknown as [U];
   }
   public findNone() {
     this.queryType = QueryType.None;
+    this.resolveQueryResultTypeMapper();
+    return [];
   }
-  public findAll() {
+  public findAll<U extends Component[]>(): U[] {
     this.queryType = QueryType.All;
+    this.resolveQueryResultTypeMapper();
+    return this.result as unknown as U[];
   }
 
   public resolveQueryResultTypeMapper<U extends unknown[]>() {

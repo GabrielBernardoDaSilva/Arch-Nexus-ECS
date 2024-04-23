@@ -1,6 +1,6 @@
 import { Component, ComponentList } from "./component";
 
-type EntityId = number;
+export type EntityId = number;
 
 export class EntityLocation {
   constructor(

@@ -1,7 +1,7 @@
 import { Archetype, Entity, EntityLocation } from "./archetype";
 import { Component } from "./component";
 import { Event, EventManager, EventType } from "./event";
-import { IPlugin } from "./plugin";
+import { IPlugin, PluginType } from "./plugin";
 import { Query, QuerySearchType } from "./query";
 import { TaskScheduler } from "./scheduler";
 import { System, SystemType } from "./system";
@@ -206,8 +206,9 @@ export class World {
     return new Query(this, ...comps);
   }
 
-  public addPlugin(plugin: IPlugin) {
-    plugin.build(this);
+  public addPlugin(plugin: PluginType) {
+    const p = new plugin();
+    p.build(this);
   }
 
   get archetypesModified() {
