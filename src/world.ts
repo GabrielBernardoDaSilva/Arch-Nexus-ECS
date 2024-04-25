@@ -144,6 +144,7 @@ export class World {
 
   public startUp() {
     for (const system of this.systems) {
+      system.world = this;
       system.startUp(this);
     }
   }
