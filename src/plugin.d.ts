@@ -1,5 +1,5 @@
 import { World } from "./world";
-
-export declare interface IPlugin {
-  build(world: World): void;
+export type PluginType = new () => IPlugin;
+export interface IPlugin {
+    build(world: World): void;
 }

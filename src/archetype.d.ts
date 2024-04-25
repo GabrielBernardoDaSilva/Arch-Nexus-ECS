@@ -1,5 +1,5 @@
 import { Component, ComponentList } from "./component";
-type EntityId = number;
+export type EntityId = number;
 export declare class EntityLocation {
     id: number;
     archetypeIndex: number;
@@ -24,4 +24,3 @@ export declare class Archetype {
     removeEntity(entityId: EntityId): void;
     moveEntity(entityId: EntityId): [EntityId, Map<string, Component>];
 }
-export {};

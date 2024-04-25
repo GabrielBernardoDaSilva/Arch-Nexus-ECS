@@ -8,7 +8,8 @@ import { World } from "./world";
 
 export type SystemType = new (...args: unknown[]) => System | System;
 export class System {
-  startUp(world: World): void {}
-  update(world: World): void {}
-  destroy(world: World): void {}
+  world: World;
+  startUp(world:World): void {}
+  update(world:World): void {}
+  destroy(world:World): void {}
 }

@@ -16,29 +16,37 @@ enum QueryType {
 // It will be used to find all entities that have a specific set of components.
 // The Query class will have a constructor that takes an array of types.
 // The types will be the components that the query will look for.
-export class Query<T extends QuerySearchType[]> {
-  types: T;
-  constructor(world: World, ...types: T) {
-    this.types = types;
+export class Query<T extends QuerySearchType[], U extends QuerySearchType[]> {
+  private withTypes: T;
+  private withOutTypes: U;
+
+
+  constructor(world: World) {
     this.world = world;
     this.world.queryCount++;
   }
-  result: QuerySearchType[][] = [];
-  world: World;
+  private result: QuerySearchType[][] = [];
+  private world: World;
   queryNeedToUpdate: boolean = true;
   private queryType: QueryType = QueryType.All;
 
-  private find(): Query<T> {
+  private execute(): Query<T, U> {
     if (!this.queryNeedToUpdate) return this;
     const archetypes = this.world.archetypes;
     const result: QuerySearchType[][] = [];
     for (const archetype of archetypes) {
       const components = archetype.components;
       const entities = archetype.entities;
-      if (this.types.every((type) => archetype.hasComponentType(type))) {
+      if (
+        this.withTypes.every(
+          (type) =>
+            archetype.hasComponentType(type) &&
+            !this.withOutTypes?.some((t) => archetype.hasComponentType(t))
+        )
+      ) {
         for (const entity of entities) {
           const entityComponents: QuerySearchType[] = [];
-          for (const type of this.types) {
+          for (const type of this.withTypes) {
             const componentName = type.name;
             const componentList = components.get(componentName);
             if (componentList) {
@@ -48,7 +56,7 @@ export class Query<T extends QuerySearchType[]> {
               );
             }
           }
-          if (entityComponents.length === this.types.length) {
+          if (entityComponents.length === this.withTypes.length) {
             result.push(entityComponents);
           }
         }
@@ -59,31 +67,41 @@ export class Query<T extends QuerySearchType[]> {
     return this;
   }
 
-  public findFirst<U extends Component[]>(): U {
-    this.queryType = QueryType.First;
-    this.resolveQueryResultTypeMapper();
-    return this.result[0] as unknown as U;
+  public with<T extends QuerySearchType[]>(...types: T): Query<T, U> {
+    const q = new Query<T, U>(this.world);
+    q.withTypes = types;
+    q.withOutTypes = this.withOutTypes as any;
+    return q;
   }
 
-  public findFirstWithoutU(): { [K in keyof T]: InstanceType<T[K]> } {
+  public without<U extends QuerySearchType[]>(...types: U): Query<T, U> {
+    const q = new Query<T, U>(this.world);
+    q.withTypes = this.withTypes as any;
+    q.withOutTypes = types;
+    return q;
+  }
+
+  public findFirst(): { [K in keyof T]: InstanceType<T[K]> } {
     this.queryType = QueryType.First;
     this.resolveQueryResultTypeMapper();
     return this.result[0] as unknown as { [K in keyof T]: InstanceType<T[K]> };
   }
-  public findLast<U extends Component[]>(): [U] {
+  public findLast(): [{ [K in keyof T]: InstanceType<T[K]> }] {
     this.queryType = QueryType.Last;
     this.resolveQueryResultTypeMapper();
-    return [this.result[this.result.length - 1]] as unknown as [U];
+    return [this.result[this.result.length - 1]] as unknown as [
+      { [K in keyof T]: InstanceType<T[K]> }
+    ];
   }
   public findNone() {
     this.queryType = QueryType.None;
     this.resolveQueryResultTypeMapper();
     return [];
   }
-  public findAll<U extends Component[]>(): U[] {
+  public findAll(): { [K in keyof T]: InstanceType<T[K]> }[] {
     this.queryType = QueryType.All;
     this.resolveQueryResultTypeMapper();
-    return this.result as unknown as U[];
+    return this.result as unknown as { [K in keyof T]: InstanceType<T[K]> }[];
   }
 
   public resolveQueryResultTypeMapper<U extends unknown[]>() {
@@ -91,7 +109,7 @@ export class Query<T extends QuerySearchType[]> {
     if (this.world.archetypesModified) this.queryNeedToUpdate = true;
 
     if (this.queryNeedToUpdate) {
-      this.find();
+      this.execute();
       this.world.queryActualConsumeHasArchetypeChanged++;
     }
     switch (this.queryType) {

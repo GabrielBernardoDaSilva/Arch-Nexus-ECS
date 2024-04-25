@@ -202,8 +202,8 @@ export class World {
     if (task) task.start();
   }
 
-  public createQuery<T extends QuerySearchType[]>(...comps: T): Query<T> {
-    return new Query(this, ...comps);
+  public createQuery<T extends QuerySearchType[], U extends QuerySearchType[]>(): Query<T, U> {
+    return new Query(this);
   }
 
   public addPlugin(plugin: PluginType) {
