@@ -2,7 +2,7 @@ import { Archetype } from "./archetype";
 import { Component } from "./component";
 import { World } from "./world";
 
-export type QuerySearchType = new (...args: any[]) => Component;
+export type QuerySearchType = new (...args: any[]) => Component | Component;
 
 enum QueryType {
   All,
@@ -63,6 +63,12 @@ export class Query<T extends QuerySearchType[]> {
     this.queryType = QueryType.First;
     this.resolveQueryResultTypeMapper();
     return this.result[0] as unknown as U;
+  }
+
+  public findFirstWithoutU(): { [K in keyof T]: InstanceType<T[K]> } {
+    this.queryType = QueryType.First;
+    this.resolveQueryResultTypeMapper();
+    return this.result[0] as unknown as { [K in keyof T]: InstanceType<T[K]> };
   }
   public findLast<U extends Component[]>(): [U] {
     this.queryType = QueryType.Last;
