@@ -17,6 +17,7 @@ export declare class World {
     private static id;
     addEntity<T extends Component[]>(...comps: T): Entity;
     addComponentToEntity<T extends Component>(entity: Entity, component: T): void;
+    getComponentFromEntity<T extends Component[]>(entity: Entity, component: new (...args: unknown[]) => T): T | undefined;
     private migrateEntityToOtherArchetype;
     removeComponentFromEntity<T extends Component>(entity: Entity, component: T): void;
     removeEntity(entity: Entity): void;

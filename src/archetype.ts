@@ -144,4 +144,16 @@ export class Archetype {
     this.entities = this.entities.filter((id) => id !== entityId);
     return [entityId, componentsOfThisEntityToMigrate];
   }
+
+  public getComponentsFromEntity<T extends Component[]>(
+    entityId: EntityId,
+    type: new (...args: unknown[]) => T
+  ): T {
+    const name = type.name;
+    if (this.components.has(name)) {
+      const componentList = this.components.get(name);
+      const index = this.entities.indexOf(entityId);
+      return componentList.components[index] as T;
+    }
+  }
 }

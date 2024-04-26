@@ -23,4 +23,5 @@ export declare class Archetype {
     removeComponent(entityId: EntityId, component: Component): [EntityId, Map<string, Component>];
     removeEntity(entityId: EntityId): void;
     moveEntity(entityId: EntityId): [EntityId, Map<string, Component>];
+    getComponentsFromEntity<T extends Component[]>(entityId: EntityId, type: new (...args: unknown[]) => T): T;
 }

@@ -66,6 +66,22 @@ export class World {
     this.hasArchetypeChanged = true;
   }
 
+  public getComponentFromEntity<T extends Component[]>(
+    entity: Entity,
+    component: new (...args: unknown[]) => T
+  ): T | undefined {
+    const entityFounded = this.entities.find((ent) => ent.id === entity.id);
+    if (entityFounded) {
+      const archetype = this.archetypes[entityFounded.archetypeIndex];
+      const result = archetype.getComponentsFromEntity(
+        entityFounded.id,
+        component
+      );
+      if (result) return result;
+    }
+    return undefined;
+  }
+
   private migrateEntityToOtherArchetype<T extends Component>(
     entity: EntityLocation,
     components: T[]
@@ -150,8 +166,6 @@ export class World {
   }
 
   public update() {
-  
-
     this.startAllTaskScheduler();
 
     for (const system of this.systems) {
@@ -161,9 +175,7 @@ export class World {
     if (this.queryCount >= this.queryActualConsumeHasArchetypeChanged) {
       this.hasArchetypeChanged = false;
       this.queryActualConsumeHasArchetypeChanged = 0;
-     
     }
-
   }
 
   public destroy() {
@@ -203,7 +215,10 @@ export class World {
     if (task) task.start();
   }
 
-  public createQuery<T extends QuerySearchType[], U extends QuerySearchType[]>(): Query<T, U> {
+  public createQuery<
+    T extends QuerySearchType[],
+    U extends QuerySearchType[]
+  >(): Query<T, U> {
     return new Query(this);
   }
 
@@ -215,7 +230,6 @@ export class World {
   get archetypesModified() {
     return this.hasArchetypeChanged;
   }
-
 
   public addEvent<E extends Event>(event: E) {
     this.eventManager.addEvent(event);
