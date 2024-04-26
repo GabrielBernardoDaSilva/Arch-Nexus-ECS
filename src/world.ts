@@ -66,20 +66,19 @@ export class World {
     this.hasArchetypeChanged = true;
   }
 
-  public getComponentFromEntity<T extends Component[]>(
+  public getComponentFromEntity<T extends QuerySearchType[]>(
     entity: Entity,
-    component: new (...args: unknown[]) => T
-  ): T | undefined {
+    ...types: T
+  ): T {
     const entityFounded = this.entities.find((ent) => ent.id === entity.id);
     if (entityFounded) {
       const archetype = this.archetypes[entityFounded.archetypeIndex];
-      const result = archetype.getComponentsFromEntity(
+      const components = archetype.getComponentsFromEntity(
         entityFounded.id,
-        component
+        types as any
       );
-      if (result) return result;
+      return components as { [key: string]: any } as T;
     }
-    return undefined;
   }
 
   private migrateEntityToOtherArchetype<T extends Component>(

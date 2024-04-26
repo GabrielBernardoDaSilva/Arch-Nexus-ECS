@@ -1,4 +1,5 @@
 import { Component, ComponentList } from "./component";
+import { QuerySearchType } from "./query";
 
 export type EntityId = number;
 
@@ -145,15 +146,22 @@ export class Archetype {
     return [entityId, componentsOfThisEntityToMigrate];
   }
 
-  public getComponentsFromEntity<T extends Component[]>(
+  public getComponentsFromEntity<T extends QuerySearchType[]>(
     entityId: EntityId,
-    type: new (...args: unknown[]) => T
+    ...types: T
   ): T {
-    const name = type.name;
-    if (this.components.has(name)) {
-      const componentList = this.components.get(name);
-      const index = this.entities.indexOf(entityId);
-      return componentList.components[index] as T;
+    const t = types as T;
+    const components: QuerySearchType[] = [];
+    for (const componentType of t) {
+      console.log(componentType);
+      const componentName = componentType.name;
+      console.log(componentName);
+      const componentList = this.components.get(componentName);
+      if (componentList) {
+        const index = this.entities.indexOf(entityId);
+        components.push(componentList.components[index] as QuerySearchType);
+      }
     }
+    return components as T;
   }
 }
