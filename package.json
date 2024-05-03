@@ -1,6 +1,6 @@
 {
   "name": "arch-nexus-ecs",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "license": "MIT",
   "description": "Arch Nexus Entity Component System",
   "type": "module",
