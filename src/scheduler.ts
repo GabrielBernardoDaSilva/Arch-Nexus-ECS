@@ -1,6 +1,6 @@
 export class WaitAmountOfSeconds {
   constructor(private seconds: number) {}
-  private timeout: NodeJS.Timeout;
+  private timeout: number | NodeJS.Timeout;
 
   async *run() {
     yield new Promise((resolve) => {
@@ -15,14 +15,14 @@ export class WaitAmountOfSeconds {
 
 type RawTask = Generator<WaitAmountOfSeconds, void, void>;
 
-type Task = (...args: unknown[]) => RawTask;
+type Task = (...args: any[]) => RawTask;
 
 export class TaskScheduler {
   name: string;
   task: RawTask;
   isExecuting: boolean = false;
   result: IteratorResult<WaitAmountOfSeconds, void>;
-  constructor(task: Task, ...args: unknown[]) {
+  constructor(task: Task, ...args: any[]) {
     this.task = task(...args);
     this.name = task.name;
   }

@@ -6,13 +6,13 @@ export declare class WaitAmountOfSeconds {
     stop(): void;
 }
 type RawTask = Generator<WaitAmountOfSeconds, void, void>;
-type Task = (...args: unknown[]) => RawTask;
+type Task = (...args: any[]) => RawTask;
 export declare class TaskScheduler {
     name: string;
     task: RawTask;
     isExecuting: boolean;
     result: IteratorResult<WaitAmountOfSeconds, void>;
-    constructor(task: Task, ...args: unknown[]);
+    constructor(task: Task, ...args: any[]);
     resume(): void;
     start(): void;
     private execute;
