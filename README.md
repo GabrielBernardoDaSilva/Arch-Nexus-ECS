@@ -27,7 +27,7 @@
 
 <h2>Usage</h2>
 
-<pre><code>
+```ts
 import { Entity } from "./archetype";
 import { Component } from "./component";
 import { Query } from "./query";
@@ -124,7 +124,7 @@ const recursive = () => {
 recursive();
 
 
-</code></pre>
+```
 
 <h2>License</h2>
 
