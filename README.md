@@ -22,8 +22,9 @@
 
 <p>You can install Arch-Nexus-ECS via npm:</p>
 
-<pre><code>npm install arch-nexus-ecs
-</code></pre>
+```sh
+npm install arch-nexus-ecs
+```
 
 <h2>Usage</h2>
 
