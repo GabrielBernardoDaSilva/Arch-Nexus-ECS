@@ -16,9 +16,9 @@ export class Resource<T> {
 export class ResourceManager {
     private resources: Map<string, Resource<any>> = new Map();
 
-    public getResource<T>(type: new (...args: any[]) => T): Resource<T> {
+    public getResource<T>(type: new (...args: any[]) => T): Resource<T> | undefined {
         const name = type.name;
-        return this.resources.get(name) as Resource<T>;
+        return this.resources.get(name)
     }
 
     public addResource<T>(resource: T) {

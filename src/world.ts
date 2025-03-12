@@ -250,7 +250,7 @@ export class World {
     this.resourceManager.addResource(resource);
   }
 
-  public getResource<T>(type: new (...args: any[]) => T): Resource<T> {
+  public getResource<T>(type: new (...args: any[]) => T): Resource<T> | undefined {
     return this.resourceManager.getResource(type);
   }
 

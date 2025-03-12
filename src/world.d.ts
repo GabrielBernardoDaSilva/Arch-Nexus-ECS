@@ -42,6 +42,6 @@ export declare class World {
     addSubscriber<E extends EventType>(ev: E, subscriber: Function): void;
     unsubscribe<E extends EventType>(ev: E, subscriber: Function): void;
     addResource<T>(resource: T): void;
-    getResource<T>(type: new (...args: any[]) => T): Resource<T>;
+    getResource<T>(type: new (...args: any[]) => T): Resource<T> | undefined;
     removeResource<T>(type: new (...args: any[]) => T): void;
 }

@@ -9,7 +9,7 @@ export declare class Resource<T> {
 export declare class ResourceManager {
     private resources: Map<string, Resource<any>>;
 
-    public getResource<T>(type: new (...args: any[]) => T): Resource<T>;
+    public getResource<T>(type: new (...args: any[]) => T): Resource<T> | undefined;
     
     public addResource<T>(resource: T): void;
     
