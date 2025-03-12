@@ -25,7 +25,7 @@
     "name": ""
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "ts-node test/index.ts",
     "build": "tsc --build",
     "clean": "tsc --build --clean",
     "decl": "tsc --declaration --emitDeclarationOnly"

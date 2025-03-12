@@ -14,10 +14,10 @@ export declare class Query<T extends QuerySearchType[], U extends QuerySearchTyp
     without<U extends QuerySearchType[]>(...types: U): Query<T, U>;
     findFirst(): {
         [K in keyof T]: InstanceType<T[K]>;
-    };
+    } | undefined;
     findLast(): [{
         [K in keyof T]: InstanceType<T[K]>;
-    }];
+    }] | undefined;
     findNone(): any[];
     findAll(): {
         [K in keyof T]: InstanceType<T[K]>;

@@ -1,5 +1,0 @@
-
-
-export class QueryV2 {
-    
-}

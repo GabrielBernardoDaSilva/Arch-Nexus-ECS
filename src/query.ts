@@ -81,12 +81,12 @@ export class Query<T extends QuerySearchType[], U extends QuerySearchType[]> {
     return q;
   }
 
-  public findFirst(): { [K in keyof T]: InstanceType<T[K]> } {
+  public findFirst(): { [K in keyof T]: InstanceType<T[K]> } | undefined {
     this.queryType = QueryType.First;
     this.resolveQueryResultTypeMapper();
     return this.result[0] as unknown as { [K in keyof T]: InstanceType<T[K]> };
   }
-  public findLast(): [{ [K in keyof T]: InstanceType<T[K]> }] {
+  public findLast(): [{ [K in keyof T]: InstanceType<T[K]> }] | undefined {
     this.queryType = QueryType.Last;
     this.resolveQueryResultTypeMapper();
     return [this.result[this.result.length - 1]] as unknown as [
