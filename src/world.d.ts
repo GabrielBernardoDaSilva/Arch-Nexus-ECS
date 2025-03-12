@@ -5,20 +5,22 @@ import { PluginType } from "./plugin";
 import { Query, QuerySearchType } from "./query";
 import { TaskScheduler } from "./scheduler";
 import { System, SystemType } from "./system";
+import { Resource, ResourceManager } from "./resource";
+
 export declare class World {
     archetypes: Archetype[];
     entities: EntityLocation[];
     systems: System[];
     schedulerSystem: TaskScheduler[];
     eventManager: EventManager;
+    resourceManager: ResourceManager;
     queryCount: number;
     queryActualConsumeHasArchetypeChanged: number;
     private hasArchetypeChanged;
     private static id;
     addEntity<T extends Component[]>(...comps: T): Entity;
     addComponentToEntity<T extends Component>(entity: Entity, component: T): void;
-    getComponentFromEntity<T extends Component[]>(entity: Entity, component: new (...args: unknown[]) => T): T | undefined;
-    private migrateEntityToOtherArchetype;
+    getComponentFromEntity<T extends QuerySearchType[]>(entity: Entity, ...types: T): T;
     removeComponentFromEntity<T extends Component>(entity: Entity, component: T): void;
     removeEntity(entity: Entity): void;
     private checkIfArchetypeIsMarkedToRemove;
@@ -39,4 +41,7 @@ export declare class World {
     addEvent<E extends Event>(event: E): void;
     addSubscriber<E extends EventType>(ev: E, subscriber: Function): void;
     unsubscribe<E extends EventType>(ev: E, subscriber: Function): void;
+    addResource<T>(resource: T): void;
+    getResource<T>(type: new (...args: any[]) => T): Resource<T>;
+    removeResource<T>(type: new (...args: any[]) => T): void;
 }

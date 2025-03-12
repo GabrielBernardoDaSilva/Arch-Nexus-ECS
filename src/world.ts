@@ -3,6 +3,7 @@ import { Component } from "./component";
 import { Event, EventManager, EventType } from "./event";
 import { IPlugin, PluginType } from "./plugin";
 import { Query, QuerySearchType } from "./query";
+import { Resource, ResourceManager } from "./resource";
 import { TaskScheduler } from "./scheduler";
 import { System, SystemType } from "./system";
 
@@ -12,6 +13,7 @@ export class World {
   systems: System[] = [];
   schedulerSystem: TaskScheduler[] = [];
   eventManager: EventManager = new EventManager();
+  resourceManager: ResourceManager = new ResourceManager();
 
   public queryCount = 0;
   public queryActualConsumeHasArchetypeChanged = 0;
@@ -243,4 +245,19 @@ export class World {
     const eventType = new ev();
     this.eventManager.unsubscribe(eventType, subscriber);
   }
+
+  public addResource<T>(resource: T) {
+    this.resourceManager.addResource(resource);
+  }
+
+  public getResource<T>(type: new (...args: any[]) => T): Resource<T> {
+    return this.resourceManager.getResource(type);
+  }
+
+  public removeResource<T>(type: new (...args: any[]) => T) {
+    this.resourceManager.removeResource(type.name);
+  }
+  
+  
+  
 }
